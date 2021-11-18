@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // 傳統函式：依呼叫的方法而定
+        // 箭頭函式：綁定到其定義時所在的物件 (這個詞看似簡單，但又充滿了陷阱!?)
+        var func = function() {
+            var func2 = function() {
+                setTimeout(() => {
+                    console.log(this);
+                }, 1000);
+            };
+            // 這裡才算真正的建立一個物件
+            // 因此要在此物件下的箭頭函式才會以此作為基準
+            var func3 = {
+                func: func2, // func3.func是鍵, 鍵的值是函數func2
+                var4: 4
+            }
+            func2(); // this = window
+            func3.func(); // func3 Object   f3內的func鍵的值是func2函數
+        };
+        func();
+        // 就算在這裡新增一個 function，也不會影響到內層的箭頭函式
+        var func5 = function() {
+            console.log(this);
+        };
+        func5(); // window
+        var func6 = function() {
+            var f = () => {
+                console.log(this);
+            };
+            f();
+        };
+        func6(); // window
+        var func10 = function() {
+            var func7 = {
+                func8: func6,
+            };
+            func7.func8();
+        }
+        func10();
+    </script>
+</body>
+
+</html>

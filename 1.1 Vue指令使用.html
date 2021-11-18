@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="text/javascript" src="vue.min.js"></script>
+    <style>
+        * {
+            list-style: none;
+        }
+        
+        .box {
+            width: 300px;
+            height: 300px;
+            background-color: aqua;
+        }
+        
+        .active {
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <h2>{{msg}}</h2>
+        <p v-text="msg"></p>
+        <div v-text="1+1"></div>
+        <div v-text="msg2"></div>
+        <div v-html="msg2"></div>
+        <div v-if="!isShow">澳門上線啦</div>
+        <div v-if="isShow">香港上線啦</div>
+        <div v-if="Math.random() >0.5">0.5機率在</div>
+        <div v-else>0.5機率不在</div>
+        <div v-show="isShow">v-show isShow</div>
+        <div v-show="!isShow">v-show ! isShow</div>
+        <div class="box" v-bind:class="{active:isRed}" @click="changeRed">0</div>
+        <ul>
+            <li v-for="(item,index) in menuList">
+                <h5 v-text="item.id"></h5>
+                <h3>{{index}} {{item.name}}</h3>
+                <em>{{item.price}}</em>
+            </li>
+        </ul>
+        <ul>
+            <li v-for="(value,key) in person">
+                {{key}} : {{value}}
+            </li>
+        </ul>
+    </div>
+    <script>
+        var app = new Vue({
+            el: "#app",
+            data: function() {
+                return {
+                    // 數據屬性
+                    msg: '指令系統',
+                    msg2: '<h2>指令系統</h2>',
+                    isShow: true,
+                    isRed: true,
+                    menuList: [{
+                        id: 1,
+                        name: "炒蛋",
+                        price: 40
+                    }, {
+                        id: 2,
+                        name: "炒菜",
+                        price: 70
+                    }, {
+                        id: 3,
+                        name: "煮開水",
+                        price: 20
+                    }],
+                    person: {
+                        name: '大頭',
+                        age: 20,
+                        fav: 'AV'
+                    }
+                }
+            },
+            // template: `
+            // <div class="app2">
+            //     <h2>{{msg}}</h2>
+            //     <p v-text="msg"></p>
+            //     <div v-text="1+1"></div>
+            //     <div v-text="msg2"></div>
+            //     <div v-html="msg2"></div>
+            //     <div v-if="!isShow">澳門上線啦</div>
+            //     <div v-if="isShow">香港上線啦</div>
+            //     <div v-if="Math.random() >0.5">0.5機率在</div>
+            //     <div v-else>0.5機率不在</div>
+            //     <div v-show="isShow">v-show isShow</div>
+            //     <div v-show="!isShow">v-show ! isShow</div>
+            //     <div class="box" v-bind:class="{active:isRed}" @click="changeRed">0</div>
+            //     <ul>
+            //         <li v-for="(item,index) in menuList">
+            //             <h5 v-text="item.id"></h5>
+            //             <h3>{{index}} {{item.name}}</h3>
+            //             <em>{{item.price}}</em>
+            //         </li>
+            //     </ul>
+            //     <ul>
+            //         <li v-for="(value,key) in person">
+            //             {{key}} : {{value}}
+            //         </li>
+            //     </ul>
+            // </div>
+            //     `,
+            methods: {
+                changeRed: function(e) {
+                    console.log(this);
+                    this.isRed = !this.isRed;
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+    <script src="Vue-router.js"></script>
+    <script src="axios/axios.js"></script>
+    <style>
+        .spinner {
+            margin: 100px auto;
+            width: 50px;
+            height: 60px;
+            text-align: center;
+            font-size: 10px;
+        }
+        
+        .spinner>div {
+            background-color: #67CF22;
+            height: 100%;
+            width: 6px;
+            display: inline-block;
+            -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
+            animation: stretchdelay 1.2s infinite ease-in-out;
+        }
+        
+        .spinner .rect2 {
+            -webkit-animation-delay: -1.1s;
+            animation-delay: -1.1s;
+        }
+        
+        .spinner .rect3 {
+            -webkit-animation-delay: -1.0s;
+            animation-delay: -1.0s;
+        }
+        
+        .spinner .rect4 {
+            -webkit-animation-delay: -0.9s;
+            animation-delay: -0.9s;
+        }
+        
+        .spinner .rect5 {
+            -webkit-animation-delay: -0.8s;
+            animation-delay: -0.8s;
+        }
+        
+        @-webkit-keyframes stretchdelay {
+            0%,
+            40%,
+            100% {
+                -webkit-transform: scaleY(0.4)
+            }
+            20% {
+                -webkit-transform: scaleY(1.0)
+            }
+        }
+        
+        @keyframes stretchdelay {
+            0%,
+            40%,
+            100% {
+                transform: scaleY(0.4);
+                -webkit-transform: scaleY(0.4);
+            }
+            20% {
+                transform: scaleY(1.0);
+                -webkit-transform: scaleY(1.0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+
+    </div>
+    <script>
+        Vue.prototype.$axios = axios;
+
+        console.log(axios);
+
+        var App = {
+            data() {
+                return {
+                    isShow: false,
+                }
+            },
+            template: `
+            <div>
+                <div class="spinner" v-show="isShow">
+                    <div class="rect1"></div>
+                    <div class="rect2"></div>
+                    <div class="rect3"></div>
+                    <div class="rect4"></div>
+                    <div class="rect5"></div>
+                </div>      
+                <button @click="sendajax">發ajax請求</button>
+                
+            </div>
+            `,
+            methods: {
+                sendajax() {
+                    // 'https://bird.ioliu.cn/joke'
+
+
+                    // 模擬cookie機制
+                    // 添加請求interceptors
+                    axios.interceptors.request.use((config) => {
+                        console.log('config:');
+                        console.log(config);
+                        // cookie 機制 如果localStorage有數據(之前有來過這網站), 就做點事情
+                        var content = localStorage.getItem('content');
+                        if (content) {
+                            // config.headers['token'] = content;
+                            // headers動了可能會影響後面,導致error
+                        };
+
+                        this.isShow = true;
+                        return config;
+                    }, function(err) {
+                        // 請求被拒絕(請求失敗)時
+                        return Promise.reject(err);
+                    });
+                    // axios.interceptors.response.use(function(response) {
+                    //     // 對響應數據做點事...
+                    //     console.log('response:');
+                    //     console.log(response);
+                    //     console.log(response.data.data[0].content);
+                    //     if (response.data.data[0].content) {
+                    //         localStorage.setItem('content', response.data.data[0].content);
+                    //     };
+                    //     App.data().isShow = false;
+                    //     return response;
+                    // }, function(err) {
+                    //     // 對響應錯誤做點什麼...
+                    //     return Promise.reject(err);
+                    // });
+                    // 我們用箭頭函數, 方便this.isShow
+                    axios.interceptors.response.use((response) => {
+                        // 對響應數據做點事...
+                        console.log('response:');
+                        console.log(response);
+                        console.log(response.data.data[0].content);
+                        if (response.data.data[0].content) {
+                            localStorage.setItem('content', response.data.data[0].content);
+                        };
+                        this.isShow = false;
+                        return response;
+                    }, function(err) {
+                        // 對響應錯誤做點什麼...
+                        return Promise.reject(err);
+                    });
+
+
+                    axios.get('https://bird.ioliu.cn/joke')
+                        .then(res => {
+                            console.log('axios.get (res)');
+                            console.log(res);
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
+
+                }
+            }
+        };
+
+        new Vue({
+            el: '#app',
+            template: `<App />`,
+            components: {
+                App
+            },
+            beforeCreate: function() {
+                console.log(this.$axios);
+            }
+        });
+    </script>
+</body>
+
+</html>

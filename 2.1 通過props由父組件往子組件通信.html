@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script>
+        // 全局組件 1.Parent 2.Child
+        // 父組件 ===> 傳遞到  子組件
+        // 1. 先給父組件綁定自定義屬性 <Child :childData = 'msg' />
+        // 2. 在子組件中使用props接收父組件傳遞的數據
+        // 3. 只要用props去接收了父組件綁定的數據, 就可以在子組件中任意使用父組件的數據
+        Vue.component('Child', {
+            template: `
+            <div>
+                <p>我是一個子組件Child {{ childData }}</p>
+                <input type="text" v-model='childData' />
+            </div>
+            `,
+            props: ['childData']
+        });
+
+        Vue.component('Parent', {
+            data() {
+                return {
+                    msg: '我是父組件的數據msg'
+                }
+            },
+            template: `
+            <div>
+                <p>我是一個父組件Parent</p>
+                <Child :childData='msg' />
+            </div>
+            `
+        });
+
+
+        // 局部組件的使用: 聲明 掛載 使用
+        // 局部入口組件的聲明 (data要是方法(函數))
+        var App = {
+            data() {
+                return {}
+            },
+            template: `
+                <div>
+                    <Parent />
+                </div>
+            `
+        };
+        console.log(App);
+        // 實例化對象 new Vue
+        var Vm = new Vue({
+            el: "#app",
+            data() {
+                return {}
+            },
+            // 掛載子組件
+            components: {
+                App
+            },
+            // 父組件可以使用子組件
+            template: `
+                <App />
+            `
+        });
+        console.log(Vm);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+    <script src="Vue-router.js"></script>
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <script>
+        // Vue.use(VueRouter); 如果不是全局就要寫
+        var Login = {
+            template: `
+                <div>我是登錄頁面</div>
+            `
+        };
+        var Register = {
+            template: `
+            <div>我是注册頁面</div>
+            `
+        };
+
+        // 3.創建router對象  只可以命名為router
+        var router = new VueRouter({
+            // 4.配置路由對象
+            routes: [
+                //5.路由匹配規則  (path匹配的component要聲明在上面)
+                {
+                    path: "/login",
+                    component: Login
+                }, {
+                    path: "/register",
+                    component: Register
+                },
+
+            ]
+        });
+
+        // 引入vue-router模塊 會給我們兩個全局組件 
+        // router-link==>a
+        // to ==> href
+        // router-view ==>路由匹配組件的出口
+        var App = {
+            data() {
+                return {}
+            },
+            template: `
+            <div>
+                <router-link to="/login">登錄頁面</router-link>
+                <router-link to="/register">注册頁面</router-link>
+                <router-view> </router-view>
+            </div>
+            `
+        }
+        new Vue({
+            el: "#app",
+            data() {
+                return {
+
+                }
+            },
+            // 6.交給Vue實例化對象管理  記得只可以命名為router
+            router,
+            template: `
+                <App />
+            `,
+            components: {
+                App
+            }
+        });
+    </script>
+</body>
+
+</html>

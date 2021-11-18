@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <App></App>
+    </div>
+    <script>
+        // beforeCreate
+        // created
+        // beforeMount
+        // mounted
+        // beforeUpdate
+        // updated
+        // activated
+        // deactivated
+        // beforeDestroy
+        // destroyed
+        // errorCaptured
+        Vue.component('Test', {
+            template: `
+                <div>
+                    <div>{{ msg }}</div>
+                    <button @click="changeHandler">改變</button>
+                </div>
+            `,
+            data() {
+                return {
+                    msg: 'hello'
+                }
+            },
+            methods: {
+                changeHandler() {
+                    this.msg = this.msg + "哈哈哈"
+                }
+            },
+            beforeCreate: function() {
+                // 組件創建之前
+                console.log(this);
+                console.log(this.msg); // undefined
+            },
+            created: function() {
+                // 組件創建之後
+                console.log(this.msg);
+                // 使用該組件, 就會調用created方法
+                // 在created方法中,可以操作後端的數據 數據驅動視圖
+                // 應用: 發起ajax請求
+            },
+            beforeMount: function() {
+                // 掛載數據到DOM之前會調用
+                console.log(document.getElementById('app'));
+            },
+            mounted: function() {
+                // 掛載數據到DOM之後會調用 Vue作用以後的DOM  操作DOM
+                console.log(document.getElementById('app'));
+            },
+            beforeUpdate: function() {
+                // 在更新DOM前 調用該鉤子 應用: 可以獲取原始的DOM
+                console.log(document.getElementById('app').innerHTML);
+            },
+            updated: function() {
+                // 在更新DOM後 調用該鉤子 應用: 可以獲取最新的DOM
+                console.log(document.getElementById('app').innerHTML);
+            },
+            beforeDestroy: function() {
+                console.log("beforeDestroy");
+            },
+            destroyed: function() {
+                console.log("destroyed");
+            },
+            activated: function() {
+                console.log('組件被激活了');
+            },
+            deactivated: function() {
+                console.log('組件被停用了');
+            }
+
+
+        });
+        var App = {
+            data() {
+                return {
+                    isShow: true
+                }
+            },
+            // Vue 內置組件<keep-alive></keep-alive>能在組件切換過程中將狀況保存在內存中,防止重新渲染DOM
+            template: `
+            <div class="app">
+                <keep-alive>
+                    <Test v-if='isShow' />
+                </keep-alive>
+                <button @click='isShow = !isShow'>轉換生死</button>
+            </div>
+            `
+        };
+
+        new Vue({
+            el: "#app",
+            data() {
+                return {}
+            },
+            methods: {},
+            components: {
+                App
+            }
+        });
+    </script>
+</body>
+
+</html>

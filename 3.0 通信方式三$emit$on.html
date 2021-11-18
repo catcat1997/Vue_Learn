@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script>
+        // 中央事件總線
+        var bus = new Vue();
+        // 下面要用bus.$emit和bus.$on
+        Vue.component('brother2', {
+            data() {
+                return {
+                    msg: 'hello from brother2',
+
+                }
+            },
+            template: `
+            <div>
+                <p>我是老二</p>
+                <input type="text" v-model='msg' @input='passData(msg)' />
+            </div>
+            `,
+            methods: {
+                passData(val) {
+                    // 觸發全局事件globalEvent  傳送數據到globalEvent事件
+                    bus.$emit('globalEvent', val);
+                    console.log(val);
+                }
+            }
+        });
+
+        Vue.component('brother1', {
+            data() {
+                return {
+                    msg: 'hello from brother1',
+                    brother2Msg: '223'
+                }
+            },
+            template: `
+            <div>
+                <p>我是老大</p>
+                <input type="text" :value='brother2Msg' />
+            </div>
+            `,
+            created() {
+                //綁定全局事件globalEvent事件  接收globalEvent事件的數據(監聽globalEvent事件)
+                bus.$on('globalEvent', (val) => {
+                        this.brother2Msg = val;
+                        console.log(val);
+                    })
+                    // bus.$on('globalEvent', function(val) {
+                    //     this.brother2Msg = val;
+                    //     console.log(val);
+                    // })
+            }
+
+
+        });
+        var App = {
+            data() {
+                return {
+                    msg: "我是父組件的內容",
+                    messagec: "hello c"
+                }
+            },
+            methods: {
+
+            },
+            template: `
+            <div>
+                <brother1></brother1>
+                <brother2></brother2>
+            </div>
+            `,
+            methods: {
+
+            }
+        }
+        new Vue({
+            el: "#app",
+            data() {
+                return {
+
+                }
+            },
+            components: {
+                App
+            },
+            template: `
+            <App />
+            `
+        });
+    </script>
+</body>
+
+</html>

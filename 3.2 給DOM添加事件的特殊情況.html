@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+
+    </div>
+    <script>
+        var App = {
+            data() {
+                return {
+                    isShow: false,
+                }
+            },
+            template: `
+                <div class='app'>
+                    <input type="text" v-show='isShow' ref='input'/>
+                </div>
+            `,
+
+            mounted() {
+                this.isShow = true;
+                console.log(this.$refs.input);
+                // this.$refs.input.focus(); // 無效 
+                // 在DOM更新後 updated()   馬上就沒了.foucs() 所以沒無效
+                // 需要利用$nextTick() 在DOM更新循環結束之後執行的回調函數, 在修改數據之後使用此方法在回調中獲取到更新之後的DOM
+                this.$nextTick(function() {
+                    console.log(this);
+                    this.$refs.input.focus();
+                });
+                // 也可以在updated() 內, 用this.$refs.input.focus();
+                // this.$nextTick(() => {
+                //     console.log(this);
+                //     this.$refs.input.focus();
+                // });
+            },
+
+
+        };
+        new Vue({
+            el: "#app",
+            data() {
+                return {
+
+                }
+            },
+            template: `
+                <App />
+            `,
+            components: {
+                App
+            }
+        });
+    </script>
+</body>
+
+</html>

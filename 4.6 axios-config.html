@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+    <script src="Vue-router.js"></script>
+    <script src="axios/axios.js"></script>
+</head>
+
+<body>
+    <div id="app">
+
+    </div>
+    <script>
+        Vue.prototype.$axios = axios;
+
+        console.log(axios);
+
+        var App = {
+            data() {
+                return {
+
+                }
+            },
+            template: `
+            <div>
+                <button @click="sendajax">發ajax請求</button>
+                
+            </div>
+            `,
+            methods: {
+                sendajax() {
+                    // 'https://bird.ioliu.cn/joke'
+                    axios.default.baseURL = 'https://bird.ioliu.cn/joke';
+                    axios.get('https://bird.ioliu.cn/joke', {
+                            // 參數 可以寫可以不寫  config
+                            params: {
+                                id: 1
+                            },
+                            transformRequest: [function(data) {
+                                // 對 data 進行任意轉換處理
+                                // data = JSON.parse(data);
+                                console.log(data);
+
+                                return data;
+                            }]
+                        })
+                        .then(res => {
+                            console.log(res.data);
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
+                    axios.post('https://bird.ioliu.cn/joke', {
+                            transformRequest: [function(data) {
+                                // 對 data 進行任意轉換處理
+                                // data = JSON.parse(data);
+                                console.log(data);
+
+                                return 'data = abc';
+                            }]
+                        })
+                        .then(res => {
+                            console.log(res.data);
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
+                }
+            }
+        };
+
+        new Vue({
+            el: '#app',
+            template: `<App />`,
+            components: {
+                App
+            },
+            beforeCreate: function() {
+                console.log(this.$axios);
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+    <script src="Vue-router.js"></script>
+    <script src="axios/axios.js"></script>
+    <style>
+        .error {
+            background-color: rgb(134, 58, 58) linear-gradient(hsla(0, 0, 100%, 0.3), transparent);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <script>
+        Vue.use(VueRouter);
+        var User = {
+            data() {
+                return {
+                    user: '',
+                    error: null,
+                    timer: null,
+                    num: 0,
+                    msg: '',
+                    msg1: '',
+                    confir: true,
+                }
+            },
+            template: `
+                <div>
+                    <div>{{num}}</div>
+                    <input type="text" v-model="msg" />
+                    <p>{{msg1}}</p>
+                    <button @click='save'>保存</button>
+                    <div v-if="error" class="error">{{error}}</div>
+                    <div class="user" v-if='user'>
+                        <h2>{{user}}</h2>    
+                    </div>
+                </div>
+            `,
+            methods: {
+                save() {
+                    this.msg1 = this.msg;
+                    this.msg = '';
+                },
+                setDatas(data) {
+                    this.user = data;
+                },
+                setError(err) {
+                    this.error = err;
+                }
+            },
+            beforeRouteEnter(to, from, next) {
+                // 在渲染該組件的對應路由被 confirm 前調用
+                // 不！能！獲取組件實例 `this`
+                // 因為當守衛執行前，組件實例還沒被創建
+                // 'https://bird.ioliu.cn/joke/${to.params.id}'
+                axios.get(`https://bird.ioliu.cn/joke`)
+                    .then(res => {
+                        next(vm => vm.setDatas(res.data.data[0].content))
+
+                        // console.log(to.params.id);
+                    })
+                    .catch(err => {
+                        next(vm => vm.setError(err))
+
+                    })
+            },
+            beforeRouteUpdate(to, from, next) {
+                // 在當前路由改變，但是該組件被復用時調用
+                // 舉例來說，對於一個帶有動態參數的路徑 /foo/:id，在 /foo/1 和 /foo/2 之間跳轉的時候，
+                // 由於會渲染同樣的 Foo 組件，因此組件實例會被復用。而這個鉤子就會在這個情況下被調用。
+                // 可以訪問組件實例 `this`
+
+                this.user = null;
+                axios.get(`https://bird.ioliu.cn/joke`)
+                    .then(res => {
+                        this.setDatas(res.data.data[0].content)
+                        this.user += (to.params.id);
+                        // console.log(to.params.id);
+                    })
+                    .catch(err => {
+                        this.setError(err)
+
+                    })
+                next();
+            },
+            beforeRouteLeave(to, from, next) {
+                // 導航離開該組件的對應路由時調用
+                // 可以訪問組件實例 `this`
+                if (this.msg && this.confir == true) {
+                    if (confirm('請保存重要信息\n如果按取消:跳轉至下一頁面')) {
+
+                    } else {
+                        next();
+                    }
+                } else {
+                    next();
+                }
+
+            }
+        };
+        // Test組件
+        var Test = {
+            template: `
+                <div>我是測試組件,  因為User組件用了beforeRouteEnter</div>
+            `
+        };
+        var router = new VueRouter({
+
+            routes: [
+
+                {
+                    path: "/user/:id",
+                    name: 'user',
+                    component: User
+                }, {
+
+                    path: "/test",
+                    name: 'test',
+                    component: Test
+                },
+
+            ]
+        });
+
+        // 入口組件app
+        var App = {
+            data() {
+                return {}
+            },
+            template: `
+            <div>
+                
+                <router-link :to="{name:'test'}">測試</router-link>
+                <router-link :to="{name: 'user',params:{id:1}}">我的用戶1</router-link>
+                <router-link :to="{name: 'user',params:{id:2}}">我的用戶2</router-link>
+                <keep-alive><router-view></router-view></keep-alive>
+                
+            </div>
+            `
+
+        }
+
+        Vue.prototype.$axios = axios;
+        new Vue({
+            el: "#app",
+            data() {
+                return {
+
+                }
+            },
+            router,
+            template: `
+                <App />
+            `,
+            components: {
+                App
+            }
+        });
+    </script>
+</body>
+
+</html>

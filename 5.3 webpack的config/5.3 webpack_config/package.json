@@ -1,0 +1,18 @@
+{
+    "name": "5.3-webpack_config",
+    "version": "1.0.0",
+    "description": "",
+    "main": "main.js",
+    "dependencies": {
+        "webpack": "^5.41.1",
+        "webpack-cli": "^4.7.2"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "build": "webpack ./main,js ./build.js",
+        "dev": "webpack --config webpack.dev.config.js",
+        "product": "webpack --config webpack.min.config.js"
+    },
+    "author": "",
+    "license": "ISC"
+}

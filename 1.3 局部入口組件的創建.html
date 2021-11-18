@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script>
+        // 全局組件 Vbtn
+        Vue.component('Vbtn', {
+            template: `
+            <button>按鈕</button>
+            `
+        });
+
+        var Vheader = {
+            template: `
+            <div>我是頭部組件
+                <Vbtn />
+                <Vbtn />
+                <Vbtn />
+            </div>
+            `
+        };
+
+        var Vaside = {
+            template: `
+            <div>我是側邊欄組件</div>
+            `
+        };
+
+        var Vcontent = {
+            template: `
+            <div>我是內容組件</div>
+            `
+        };
+
+        // 局部組件的使用: 聲明 掛載 使用
+        // 局部入口組件的聲明 (data要是方法(函數))
+        var appName = {
+            data() {
+                return {}
+            },
+            methods: {
+                clickHanlder() {
+                    console.log(this);
+                }
+
+            },
+            template: `
+                <div>
+                    <Vheader />
+                    <div>
+                        <Vaside />
+                        <Vcontent />
+                    </div>
+                    我是一個入口組件
+                    <button @click="clickHanlder">I'm button</button>
+                </div>
+            `,
+            components: {
+                Vheader,
+                Vaside,
+                Vcontent
+            }
+        };
+        console.log(appName);
+        // 實例化對象 new Vue
+        var Vm = new Vue({
+            el: "#app",
+            data() {
+                return {}
+            },
+            // 掛載子組件
+            components: {
+                appName
+            },
+            // 父組件可以使用子組件
+            template: `
+                <appName />
+            `
+        });
+        console.log(Vm);
+    </script>
+</body>
+
+</html>

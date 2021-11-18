@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+    <script src="Vue-router.js"></script>
+    <script src="axios/axios.js"></script>
+</head>
+
+<body>
+
+    <div id="app">
+
+        <router-link to="/home">首頁</router-link>
+        <router-link to="/blog">Myblog</router-link>
+        <router-link to="/login">登錄</router-link>
+        <a href="javascript:void(0)" @click="window.localStorage.removeItem('user')">退出</a>
+
+        <router-view></router-view>
+
+
+    </div>
+
+    <script>
+        Vue.use(VueRouter); // 如果router是局部,不是全局,就要用這代碼
+        var Home = {
+            template: `
+            <div>
+                我是首頁
+            </div>
+            `
+        };
+
+        var Blog = {
+            template: `
+            <div>
+                我是Myblog
+            </div>
+            `
+        };
+        var Login = {
+            data() {
+                return {
+                    name: '',
+                    pwd: ''
+                }
+            },
+            template: `
+            <div>
+                登錄頁面:
+                <br />
+                <input type="text" v-model= 'name' />
+                <input type="password" v-model= 'pwd' />
+                <input type="button" value="login" @click='loginHandler'/>
+            </div>
+            `,
+            methods: {
+                loginHandler() {
+                    // login button
+                    localStorage.setItem('user', {
+                        name: this.name,
+                        pwd: this.pwd
+                    });
+                    // 登錄完成 跳轉到myblog頁面
+                    // 編程式導航(跳轉頁面)
+                    this.$router.push({
+                        name: 'myBlog'
+                    });
+                }
+            }
+        }
+        var router = new VueRouter({
+            // 4.配置路由對象
+            routes: [{
+                    path: '/',
+                    redirect: '/home'
+
+                }, {
+                    path: '/home',
+                    component: Home
+                }, {
+                    path: '/blog',
+                    name: 'myBlog',
+                    component: Blog,
+                    // meta是給未來的路由 做權限控制
+                    meta: {
+                        // 證明 用戶訪問該組件時 需要登錄
+                        //(auth=ture時,next()到path: '/login')
+                        //之後再 if (localStorage.getItem('user'))......
+                        auth: true
+                    }
+                }, {
+                    path: '/login',
+                    component: Login
+                }
+
+            ]
+        });
+        // 只要路由一加載,beforeEach()就會調用
+        router.beforeEach((to, from, next) => {
+            console.log(to);
+            console.log(from);
+            console.log(to.meta.auth);
+            if (to.meta.auth) {
+                // 用戶點擊了blog連結, 該用戶需要登錄
+                if (localStorage.getItem('user')) {
+                    // 如果有輸入ac和pw
+                    next();
+                } else {
+                    next({
+                        path: '/login'
+                    })
+                }
+
+            } else {
+                next();
+            }
+            // if (to.name !== 'Login' && !isAuthenticated) next({
+            //     name: 'Login'
+            // })
+            // else next()
+        });
+        new Vue({
+            el: "#app",
+            router
+        });
+    </script>
+
+</body>
+
+</html>

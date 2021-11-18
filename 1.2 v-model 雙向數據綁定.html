@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        v-bind加上valueChange
+        <input type="text" :value='msg' @input="valueChange">
+        <br> v-model
+        <input type="text" v-model='msg'>
+        <h3>{{msg}}</h3>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    msg: "大頭"
+                }
+            },
+            methods: {
+                valueChange(e) {
+                    console.log(e.target.value);
+                    this.msg = e.target.value;
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

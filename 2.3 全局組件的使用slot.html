@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+    <style>
+        .default {
+            display: inline-block;
+            line-height: 1;
+            white-space: nowrap;
+            cursor: pointer;
+            background: #fff;
+            border: 1px solid #dcdfe6;
+            color: #606266;
+            -webkit-appearance: none;
+            text-align: center;
+            box-sizing: border-box;
+            outline: none;
+            margin: 0;
+            transition: .1s;
+            font-weight: 500;
+            /* -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none; */
+            padding: 12px 20px;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+        
+        .primary {
+            color: #fff;
+            background-color: #409eff;
+            border-color: #409eff;
+        }
+        
+        .success {
+            color: #fff;
+            background-color: #67c23a;
+            border-color: #67c23a;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script>
+        // 全局組件 Vbtn
+        Vue.component('Vbtn', {
+            template:
+            // 插槽 內置組件slot 做為承載分發內容的出口  自己封裝
+                `
+            <button class="default" :class="type">
+                <slot>
+                    default
+                </slot>
+            </button>
+            `,
+            props: ['type']
+        });
+
+        var Vheader = {
+            template: `
+            <div>我是頭部組件
+                <Vbtn type='primary'>登錄</Vbtn>
+                <Vbtn type='success'>注册</Vbtn>
+                <Vbtn />
+            </div>
+            `
+        };
+
+        var Vaside = {
+            template: `
+            <div>我是側邊欄組件</div>
+            `
+        };
+
+        var Vcontent = {
+            template: `
+            <div>我是內容組件</div>
+            `
+        };
+
+        // 局部組件的使用: 聲明 掛載 使用
+        // 局部入口組件的聲明 (data要是方法(函數))
+        var appName = {
+            data() {
+                return {}
+            },
+            methods: {
+                clickHanlder() {
+                    console.log(this);
+                }
+
+            },
+            template: `
+                <div>
+                    <Vheader />
+                    <div>
+                        <Vaside />
+                        <Vcontent />
+                    </div>
+                    我是一個入口組件
+                    <button @click="clickHanlder">I'm button</button>
+                </div>
+            `,
+            components: {
+                Vheader,
+                Vaside,
+                Vcontent
+            }
+        };
+        console.log(appName);
+        // 實例化對象 new Vue
+        var Vm = new Vue({
+            el: "#app",
+            data() {
+                return {}
+            },
+            // 掛載子組件
+            components: {
+                appName
+            },
+            // 父組件可以使用子組件
+            template: `
+                <appName />
+            `
+        });
+        console.log(Vm);
+    </script>
+</body>
+
+</html>

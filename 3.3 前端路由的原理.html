@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+</head>
+
+<body>
+    <!-- 路由實現:
+    1.傳統開發方式url改變後, 立刻發生請求響應整個頁面, 如果資源過多,可能傳統開發會出現白屏。
+    2.SPA單頁面應用 single page application
+    錨點值改變後, 不會立刻發送請求, 而是在某個合適的時機, 發起ajax請求 
+    ***頁面局部渲染。
+    優點: 頁面不立刻跳轉, 用戶體驗好
+    Vue react angular 都是SPA -->
+    <a href="javascript:;">nothing</a>
+    <a href="#/login">登錄頁面</a>
+    <a href="#/register">注册頁面</a>
+    <div id="app"></div>
+
+    <script>
+        var oDiv = document.querySelector('#app');
+        window.onhashchange = function() {
+            console.log(location.hash);
+            switch (location.hash) {
+                case '#/login':
+                    oDiv.innerHTML = '<h2>我是登錄頁面</h2>';
+                    break;
+                case '#/register':
+                    oDiv.innerHTML = '<h2>我是注册頁面</h2>';
+                    break;
+                default:
+                    break;
+            }
+        };
+    </script>
+</body>
+
+</html>

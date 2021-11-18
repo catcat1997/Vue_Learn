@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <h1>{{msg}}</h1>
+        <h2>{{isBool}}</h2>
+        <h3>{{1+1}}</h3>
+        <h3>{{str.split('').reverse().join('')}}</h3>
+        <!-- 字符串 轉數組 reverse() 轉字符串 -->
+        <div>{{ 1>2?'true':'false'}}</div>
+        <div>{{ {name:'張三'} }}</div>
+    </div>
+    <div>我不是template</div>
+    <script>
+        var data = {
+            msg: "西螺",
+            isBool: 1 == 1,
+            str: "Hello Vue!"
+        };
+        var Vm = new Vue({
+            el: "#app",
+            data: data,
+            // 數據屬性, 可以是對象, 也可以是函數
+
+            // template: "<div>'template來了!'</div>"
+        });
+        // 除了數據屬性, Vue實例還暴露了一些有用的實例屬性和方法, 它們都有前綴$
+        console.log(Vm);
+        console.log(Vm.$el);
+        console.log(Vm.$data);
+        console.log("----------test---------");
+        console.log(Vm.$data === data);
+        console.log(Vm.$el === document.getElementById("app"));
+    </script>
+</body>
+
+</html>

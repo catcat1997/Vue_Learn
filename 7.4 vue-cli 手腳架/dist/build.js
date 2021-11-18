@@ -1,0 +1,1 @@
+window.addEventListener("load",(function(){document.querySelector(".g9g").style.backgroundColor="pink"}));

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+    <script src="Vue-router.js"></script>
+    <script src="axios/axios.js"></script>
+</head>
+
+<body>
+    <div id="app">
+
+    </div>
+    <script>
+        Vue.prototype.$axios = axios;
+
+        console.log(axios);
+
+        var App = {
+            data() {
+                return {}
+            },
+            template: `
+            <div>
+                <button @click="sendajax">發ajax請求</button>
+            </div>
+            `,
+            methods: {
+                sendajax() {
+                    this.$axios.get('https://bird.ioliu.cn/joke')
+                        .then(res => {
+                            console.log(res);
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                }
+            }
+        };
+
+        new Vue({
+            el: '#app',
+            template: `<App />`,
+            components: {
+                App
+            },
+            beforeCreate: function() {
+                console.log(this.$axios);
+            }
+        });
+    </script>
+</body>
+
+</html>

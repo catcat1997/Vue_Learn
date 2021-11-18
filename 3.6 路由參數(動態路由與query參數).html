@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+    <script src="Vue-router.js"></script>
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <script>
+        // 地址欄上 路由范式
+        // 1. xxx.html#/user/1 params 動態路由參數
+        // 2. ooo.html#/user?userId=1 query參數(帶有?號)
+
+
+        // Vue.use(VueRouter); 如果不是全局就要寫
+        // 5.5 路由匹配的component出口的 內容
+        var UserParams = {
+            template: `
+                <div>我是用戶1(動態路由/user/:id)</div>
+            `,
+            created() {
+                // 當我們創建 就會拋出兩個對象 掛載Vue 實例化對象   
+                console.log(this.$router);
+                console.log(this.$route);
+                console.log(this.$route.params.id);
+            }
+        };
+        var UserQuery = {
+            template: `
+            <div>我是用戶2 UserQuery (/user)</div>
+            `
+        };
+
+        // 3.創建router對象  只可以命名為router
+        var router = new VueRouter({
+            // 4.配置路由對象
+            routes: [
+                //5.路由匹配規則  (path匹配的component要聲明在上面)
+                {
+                    // 動態路由參數 以:冒號開頭(:屬性) 通常:id  :uname
+                    path: "/user/:id",
+                    name: 'userP',
+                    component: UserParams
+                }, {
+                    // query參數
+                    path: "/user",
+                    name: 'userQ',
+                    // 利用路由命名name 可以和v-bind:to="{name:'xxx'}" 配合 造成動態路由
+                    component: UserQuery
+                },
+
+            ]
+        });
+
+        // 引入vue-router模塊 會給我們兩個全局組件 
+        // router-link==>a
+        // to ==> href
+        // router-view ==>路由匹配組件的出口
+        var App = {
+            data() {
+                return {}
+            },
+            template: `
+            <div>
+                <router-link :to="{name:'userP',params:{id:1}}">動態路由參數 用戶1</router-link>
+                <router-link :to="{name:'userQ',query:{userId:1}}">Query參數 用戶2</router-link> 
+                <router-view> </router-view>
+            </div>
+            `
+                // 上面的params:{id:1} 會把動態路由 跑到#/user/1
+                // 上面的query:{userId:1}   會把query跑到#/user?userId=1
+        }
+        new Vue({
+            el: "#app",
+            data() {
+                return {
+
+                }
+            },
+            // 6.交給Vue實例化對象管理  記得只可以命名為router
+            router,
+            template: `
+                <App />
+            `,
+            components: {
+                App
+            }
+        });
+    </script>
+</body>
+
+</html>

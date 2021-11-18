@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script>
+        // 全局組件 1.Parent 2.Child
+
+        Vue.component('Child', {
+            template: `
+            <div>
+                <p>我是一個子組件Child</p>
+                <input type="text" v-model='childData' @input='changeValue(childData)'/>
+            </div>
+            `,
+            props: ['childData'],
+            methods: {
+                changeValue(val) {
+                    // 在函數中
+                    // 自定義事件, 一定通過this.$emit()去觸發 , $emit是一個Listener
+                    // $emit(自定義事件名, 消息)
+                    this.$emit('childHandler', val)
+                }
+            }
+        });
+        // 父組件 ===> 子組件 props={{父msg}} 子組件使用父msg
+        // 子組件 ===> 傳遞到  父組件   $emit
+        // 1.在父組件綁定 自定義事件 @childHandler
+        // 2.在子組件中 觸發原生的事件 在函數中使用 $emit觸發自定義的childHandler
+
+        Vue.component('Parent', {
+            data() {
+                return {
+                    msg: '我是父組件的數據msg',
+                    msg2: ''
+                }
+            },
+            template: `
+            <div>
+                <p>我是一個父組件Parent</p>
+                <Child :childData='msg' @childHandler='childHandlerFunc' />
+                <p>{{msg}}</p>
+            </div>
+            `,
+            methods: {
+                childHandlerFunc(val) {
+                    console.log(val);
+                    // this.msg = val;
+                },
+
+            }
+        });
+
+
+        // 局部組件的使用: 聲明 掛載 使用
+        // 局部入口組件的聲明 (data要是方法(函數))
+        var App = {
+            data() {
+                return {}
+            },
+            template: `
+                <div>
+                    <Parent />
+                </div>
+            `
+        };
+        console.log(App);
+        // 實例化對象 new Vue
+        var Vm = new Vue({
+            el: "#app",
+            data() {
+                return {}
+            },
+            // 掛載子組件
+            components: {
+                App
+            },
+            // 父組件可以使用子組件
+            template: `
+                <App />
+            `
+        });
+        console.log(Vm);
+    </script>
+</body>
+
+</html>

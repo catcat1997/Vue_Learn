@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+    <script src="Vue-router.js"></script>
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <script>
+        var timeLine = {
+            template: `
+            <div id="timeline">
+                timeline頁面
+                
+            </div>
+            `,
+            created() {
+                console.log('timeline組件創建了');
+            },
+            mounted() {
+                console.log('timeline組件DOM加載了');
+            },
+            destroyed() {
+                console.log('timeline組件銷毀了');
+            }
+        }
+        var Pins = {
+            template: `
+                <div>
+                    <h3 @click="clickPins">pins頁面 </h3>          
+                </div>
+            `,
+            methods: {
+                clickPins(e) {
+                    e.target.style.color = "red";
+                }
+            },
+            created() {
+                console.log('pins組件創建了');
+            },
+            mounted() {
+                console.log('pins組件DOM加載了');
+            },
+            destroyed() {
+                console.log('pins組件銷毀了');
+            }
+        }
+
+        // 3.創建router對象  只可以命名為router
+        var router = new VueRouter({
+            // 4.配置路由對象
+            routes: [{
+                    path: '/timeline',
+                    component: timeLine,
+
+                }, {
+                    path: '/pins',
+                    component: Pins
+                }
+
+            ]
+        });
+
+        var App = {
+            data() {
+                return {}
+            },
+            template: `
+            <div>
+                <router-link to="/timeline">timeline</router-link>
+                <router-link to="/pins">pins</router-link>
+                <keep-alive>
+                    <router-view></router-view>
+                </keep-alive>
+            </div>
+            `
+
+        }
+        new Vue({
+            el: "#app",
+            data() {
+                return {
+
+                }
+            },
+            // 6.交給Vue實例化對象管理  記得只可以命名為router
+            router,
+            template: `
+                <App />
+            `,
+            components: {
+                App
+            }
+        });
+    </script>
+</body>
+
+</html>

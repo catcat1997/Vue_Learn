@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script>
+        // 子利用 $attrs $listeners 繼承父屬性,
+        // 子利用 $emit 傳數據到取上層的父
+        Vue.component('C', {
+            data() {
+                return {
+
+                }
+            },
+
+            template: `
+                <div>
+                    <div @click='cClickHandler'>{{$attrs.messagec}}</div>
+                </div>
+            `,
+            methods: {
+                cClickHandler() {
+                    alert(1);
+                    this.$emit('getCDataListeners', '我是c的數據');
+                }
+            }
+        });
+        Vue.component('B', {
+            data() {
+                return {
+
+                }
+            },
+
+            template: `
+                <div>
+                    <C v-bind="$attrs" v-on = "$listeners"></C>
+                
+                </div>
+            `,
+            methods: {
+
+            }
+        });
+        Vue.component('A', {
+            data() {
+                return {
+
+                }
+            },
+
+            template: `
+                <div>
+                    <B v-bind="$attrs" v-on="$listeners"></B>
+                    <!--<input type="text" v-model="$attrs.messagec">-->
+                </div>
+            `,
+            methods: {
+
+            }
+        });
+        var App = {
+            data() {
+                return {
+                    msg: "我是父組件的內容",
+                    messagec: "hello c"
+                }
+            },
+            methods: {
+
+            },
+            template: `
+            <div>
+                <p>這是一個父組件</p>
+                <A :messagec = 'messagec' v-on:getCDataListeners="getCData"></A>
+            </div>
+            `,
+            methods: {
+                // 執行c組件的觸發的函數
+                getCData(val) {
+                    console.log(val);
+                }
+            }
+        }
+        new Vue({
+            el: "#app",
+            data() {
+                return {
+
+                }
+            },
+            components: {
+                App
+            },
+            template: `
+            <App />
+            `
+        });
+    </script>
+</body>
+
+</html>
